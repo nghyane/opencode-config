@@ -8,6 +8,13 @@ export interface GitHubTreeEntry {
   sha: string;
 }
 
+export async function getDefaultBranch(repoInput: string): Promise<{ repo: string; defaultBranch?: string }> {
+  const repo = normalizeGitHubRepo(repoInput);
+  const response = await Bun.$`gh repo view ${repo} --json defaultBranchRef`.json();
+  const defaultBranch = typeof response?.defaultBranchRef?.name === "string" ? response.defaultBranchRef.name : undefined;
+  return { repo, defaultBranch };
+}
+
 export async function getBranchTreeSha(repoInput: string, ref: string): Promise<{ repo: string; treeSha?: string }> {
   const repo = normalizeGitHubRepo(repoInput);
   const branch = await Bun.$`gh api repos/${repo}/branches/${ref}`.json();

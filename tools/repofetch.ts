@@ -1,6 +1,6 @@
 import { tool } from "@opencode-ai/plugin";
 import { clipText, escapeRegExp, normalizeGitHubRepo } from "./_shared";
-import { fetchRepoFile } from "./lib/github";
+import { fetchRepoFile, getDefaultBranch } from "./lib/github";
 
 const MAX_BLOCKS = 8;
 const WINDOW_SIZE = 60;
@@ -159,29 +159,21 @@ export default tool({
   },
   async execute(args) {
     const repo = normalizeGitHubRepo(args.repo);
-    const ref = args.ref ?? "HEAD";
+    const ref = args.ref ?? (await getDefaultBranch(repo)).defaultBranch ?? "main";
     const { response } = await fetchRepoFile(repo, args.path, ref);
 
     if (response.type !== "file") {
-      return { ok: false, error: { code: "not-a-file", message: `${args.path} is not a file` } };
+      return `${args.path} is not a file`;
     }
 
     const raw = typeof response.content === "string" ? response.content.replace(/\n/g, "") : "";
     const content = Buffer.from(raw, "base64").toString("utf8");
 
-    return {
-      ok: true,
-      result: {
-        repo,
-        ref,
-        path: response.path,
-        sha: response.sha,
-        size: response.size,
-        url: response.html_url,
-        ...(args.objective
-          ? { excerpts: formatBlocks(content, args.objective, response.path) }
-          : { fullContent: clipText(content) }),
-      },
-    };
+    if (args.objective) {
+      const excerpts = formatBlocks(content, args.objective, response.path);
+      return [`${repo} ${response.path} ${response.html_url}`, ...excerpts].join("\n\n");
+    }
+
+    return [`${repo} ${response.path} ${response.html_url}`, clipText(content)].join("\n\n");
   },
 });

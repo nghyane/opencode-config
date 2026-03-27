@@ -1,5 +1,5 @@
 import { tool } from "@opencode-ai/plugin";
-import { getRepoTree } from "./lib/github";
+import { getDefaultBranch, getRepoTree } from "./lib/github";
 
 export default tool({
   description: "List files in a GitHub repository using gh.",
@@ -10,9 +10,9 @@ export default tool({
     limit: tool.schema.number().int().positive().max(500).optional().describe("Maximum number of entries to return."),
   },
   async execute(args) {
-    const ref = args.ref ?? "HEAD";
+    const ref = args.ref ?? (await getDefaultBranch(args.repo)).defaultBranch ?? "main";
     const { repo, tree } = await getRepoTree(args.repo, ref);
-    if (!tree.length) return { ok: false, error: { code: "invalid-ref", message: `Could not resolve tree for ${repo}@${ref}` } };
+    if (!tree.length) return `Could not resolve tree for ${repo}@${ref}`;
     const prefix = args.path?.replace(/^\/+|\/+$/g, "");
     const filtered = tree.filter((entry) => !prefix || entry.path === prefix || entry.path.startsWith(`${prefix}/`));
     const entries = filtered.slice(0, args.limit ?? 200).map((entry) => ({
@@ -23,14 +23,7 @@ export default tool({
       url: `https://github.com/${repo}/${entry.type === "tree" ? "tree" : "blob"}/${ref}/${entry.path}`,
     }));
 
-    return {
-      ok: true,
-      result: {
-        repo,
-        ref,
-        entries,
-        truncated: filtered.length > entries.length,
-      },
-    };
+    const lines = entries.map((entry) => `${entry.type === "dir" ? "dir" : "file"} ${entry.path} ${entry.url}`);
+    return lines.length > 0 ? lines.join("\n") : `No entries found for ${repo}@${ref}`;
   },
 });
