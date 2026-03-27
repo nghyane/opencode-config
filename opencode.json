@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["opencode-claude-auth"],
+  "plugin": ["opencode-claude-auth", "opencode-handoff"],
   "agent": {
     "plan": {
       "disable": true
