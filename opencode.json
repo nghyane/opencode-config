@@ -1,0 +1,23 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["opencode-claude-auth"],
+  "agent": {
+    "plan": {
+      "disable": true
+    },
+    "build": {
+      "description": "Default coding agent with tight tool discipline, precise edits, and lightweight verification.",
+      "prompt": "{file:./prompts/build.txt}",
+      "permission": {
+        "edit": "allow",
+        "webfetch": "allow",
+        "bash": {
+          "*": "allow",
+          "git push*": "ask",
+          "git branch -D*": "ask",
+          "rm *": "ask"
+        }
+      }
+    }
+  }
+}
