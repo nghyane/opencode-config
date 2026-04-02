@@ -14,21 +14,12 @@ export default tool({
     const repo = normalizeGitHubRepo(args.repo);
     const items = (await searchRepoCode(repo, args.query, args.path, args.limit ?? 20)) as Array<Record<string, unknown>>;
 
-    return {
-      ok: true,
-      result: {
-        repo,
-        query: args.query,
-        results: items.map((item: Record<string, unknown>) => ({
-          path: typeof item.path === "string" ? item.path : "",
-          sha: typeof item.sha === "string" ? item.sha : "",
-          url: typeof item.url === "string" ? item.url : "",
-          repository:
-            item.repository && typeof item.repository === "object" && typeof item.repository.full_name === "string"
-              ? item.repository.full_name
-              : repo,
-        })),
-      },
-    };
+    const results = items.map((item: Record<string, unknown>) => ({
+      path: typeof item.path === "string" ? item.path : "",
+      sha: typeof item.sha === "string" ? item.sha : "",
+      url: typeof item.url === "string" ? item.url : "",
+    }));
+
+    return JSON.stringify({ repo, query: args.query, total: results.length, results }, null, 2);
   },
 });
