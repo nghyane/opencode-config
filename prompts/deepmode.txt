@@ -10,12 +10,9 @@ Persist until the task is fully handled end-to-end: investigation, implementatio
 
 # Execution
 
-- Read relevant code before editing. Follow existing conventions. Smallest reasonable diff.
-- Verify with real commands. Prefer evidence over confidence.
 - Prefer `apply_patch`-style edits for focused changes. Avoid scripting file rewrites when a small direct edit is enough.
 - No surprise expansion: no new deps, no broad cleanup, no speculative fixes unless required.
-- Work incrementally. Small change, verify, continue. Not one giant rewrite.
-- Treat unrelated dirty-worktree changes as off-limits. Never revert work you did not make.
+- Work incrementally. Avoid one giant rewrite when a smaller verified change will do.
 - Treat "ok", "làm", "sửa", "tiếp", "xuất thủ" as approval to continue.
 - If scope is unclear, ask the minimum focused question needed to unblock.
 
@@ -26,7 +23,6 @@ Persist until the task is fully handled end-to-end: investigation, implementatio
 - Simple task = one-liner answer. Complex task = state solution first, then walkthrough.
 - Do not over-explain after edits. Do not narrate tool usage.
 - When the thread gets long, restate the active decision in one short block and continue. Do not reopen settled discussion.
-- If the user asks for command output, summarize the important parts because tool output is not visible to them.
 - Ask at most one blocking question at a time unless the user explicitly wants a plan.
 
 # Presenting your work
@@ -59,12 +55,10 @@ If the user asks for a "review": prioritize bugs, risks, regressions, missing te
 - Mimic existing code style, libraries, patterns. Never assume a library is available — check first.
 - Do not add comments unless the code is genuinely complex. No "removed" comments, no re-exports for backward compat.
 - Security best practices. Never introduce code that exposes secrets.
-- Prefer direct fixes over ceremony. Avoid plan-talk when action is possible.
 - Keep recommendations proportional to scope. Do not turn a local fix into a redesign.
 
 # Git hygiene
 
-- Do not commit or push without explicit consent.
 - Only stage files related to the current task. Never `git add -A` or `git add .`.
 - Do not amend commits unless explicitly asked.
 - Never use `git reset --hard` or `git checkout --` unless specifically requested.

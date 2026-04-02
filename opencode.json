@@ -1,22 +1,268 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["opencode-claude-auth", "opencode-handoff"],
   "agent": {
-    "plan": {
-      "disable": true
-    },
     "build": {
-      "description": "Default coding agent with tight tool discipline, precise edits, and lightweight verification.",
-      "prompt": "{file:./prompts/build.txt}",
+      "description": "Default coding agent for fast, scoped execution with small diffs and lightweight verification.",
       "permission": {
-        "edit": "allow",
-        "webfetch": "allow",
         "bash": {
           "*": "allow",
-          "git push*": "ask",
           "git branch -D*": "ask",
+          "git push*": "ask",
           "rm *": "ask"
+        },
+        "edit": "allow",
+        "webfetch": "allow"
+      },
+      "prompt": "{file:./prompts/build.txt}"
+    },
+    "deepmode": {
+      "description": "Autonomous coding worker for end-to-end execution, real verification, and tong-mon escalation on risky tasks.",
+      "model": "launchdock/gpt-5.3-codex",
+      "reasoningEffort": "high",
+      "permission": {
+        "bash": {
+          "*": "allow",
+          "git branch -D*": "ask",
+          "git push*": "ask",
+          "rm *": "ask"
+        },
+        "edit": "allow",
+        "webfetch": "allow",
+        "skill": "allow",
+        "question": "allow"
+      },
+      "prompt": "{file:./prompts/deepmode.txt}"
+    },
+    "plan": {
+      "disable": true
+    }
+  },
+  "tools": {
+    "todowrite": false,
+    "todoread": false,
+    "mcp__shared_*": false,
+    "multi_tool_use.*": false,
+    "task": false
+  },
+  "plugin": ["opencode-claude-auth", "opencode-handoff"],
+  "provider": {
+    "launchdock": {
+      "models": {
+        "claude-3-haiku-20240307": {
+          "attachment": true,
+          "id": "claude-3-haiku-20240307",
+          "limit": {
+            "context": 200000,
+            "output": 4096
+          },
+          "name": "Claude Haiku 3",
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true
+        },
+        "claude-haiku-4-5-20251001": {
+          "attachment": true,
+          "id": "claude-haiku-4-5-20251001",
+          "limit": {
+            "context": 200000,
+            "output": 64000
+          },
+          "name": "Claude Haiku 4.5",
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true
+        },
+        "claude-opus-4-1-20250805": {
+          "attachment": true,
+          "id": "claude-opus-4-1-20250805",
+          "limit": {
+            "context": 200000,
+            "output": 32000
+          },
+          "name": "Claude Opus 4.1",
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true
+        },
+        "claude-opus-4-20250514": {
+          "attachment": true,
+          "id": "claude-opus-4-20250514",
+          "limit": {
+            "context": 200000,
+            "output": 32000
+          },
+          "name": "Claude Opus 4",
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true
+        },
+        "claude-opus-4-5-20251101": {
+          "attachment": true,
+          "id": "claude-opus-4-5-20251101",
+          "limit": {
+            "context": 200000,
+            "output": 64000
+          },
+          "name": "Claude Opus 4.5",
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true
+        },
+        "claude-opus-4-6": {
+          "attachment": true,
+          "id": "claude-opus-4-6",
+          "limit": {
+            "context": 1000000,
+            "output": 128000
+          },
+          "name": "Claude Opus 4.6",
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true
+        },
+        "claude-opus-4-6-thinking": {
+          "attachment": true,
+          "id": "claude-opus-4-6-thinking",
+          "limit": {
+            "context": 1000000,
+            "output": 128000
+          },
+          "name": "Claude Opus 4.6 Thinking",
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true
+        },
+        "claude-sonnet-4-20250514": {
+          "attachment": true,
+          "id": "claude-sonnet-4-20250514",
+          "limit": {
+            "context": 200000,
+            "output": 64000
+          },
+          "name": "Claude Sonnet 4",
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true
+        },
+        "claude-sonnet-4-5-20250929": {
+          "attachment": true,
+          "id": "claude-sonnet-4-5-20250929",
+          "limit": {
+            "context": 200000,
+            "output": 64000
+          },
+          "name": "Claude Sonnet 4.5",
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true
+        },
+        "claude-sonnet-4-6": {
+          "attachment": true,
+          "id": "claude-sonnet-4-6",
+          "limit": {
+            "context": 1000000,
+            "output": 64000
+          },
+          "name": "Claude Sonnet 4.6",
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true
+        },
+        "claude-sonnet-4-6-thinking": {
+          "attachment": true,
+          "id": "claude-sonnet-4-6-thinking",
+          "limit": {
+            "context": 1000000,
+            "output": 64000
+          },
+          "name": "Claude Sonnet 4.6 Thinking",
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true
+        },
+        "gpt-5.1-codex-max": {
+          "attachment": true,
+          "id": "gpt-5.1-codex-max",
+          "limit": {
+            "context": 400000,
+            "input": 272000,
+            "output": 128000
+          },
+          "name": "GPT-5.1 Codex Max",
+          "reasoning": true,
+          "temperature": false,
+          "tool_call": true
+        },
+        "gpt-5.1-codex-mini": {
+          "attachment": true,
+          "id": "gpt-5.1-codex-mini",
+          "limit": {
+            "context": 400000,
+            "input": 272000,
+            "output": 128000
+          },
+          "name": "GPT-5.1 Codex mini",
+          "reasoning": true,
+          "temperature": false,
+          "tool_call": true
+        },
+        "gpt-5.2": {
+          "attachment": true,
+          "id": "gpt-5.2",
+          "limit": {
+            "context": 400000,
+            "input": 272000,
+            "output": 128000
+          },
+          "name": "GPT-5.2",
+          "reasoning": true,
+          "temperature": false,
+          "tool_call": true
+        },
+        "gpt-5.2-codex": {
+          "attachment": true,
+          "id": "gpt-5.2-codex",
+          "limit": {
+            "context": 400000,
+            "input": 272000,
+            "output": 128000
+          },
+          "name": "GPT-5.2 Codex",
+          "reasoning": true,
+          "temperature": false,
+          "tool_call": true
+        },
+        "gpt-5.3-codex": {
+          "attachment": true,
+          "id": "gpt-5.3-codex",
+          "limit": {
+            "context": 400000,
+            "input": 272000,
+            "output": 128000
+          },
+          "name": "GPT-5.3 Codex",
+          "reasoning": true,
+          "temperature": false,
+          "tool_call": true
+        },
+        "gpt-5.4": {
+          "attachment": true,
+          "id": "gpt-5.4",
+          "limit": {
+            "context": 1050000,
+            "input": 922000,
+            "output": 128000
+          },
+          "name": "GPT-5.4",
+          "reasoning": true,
+          "temperature": false,
+          "tool_call": true
         }
+      },
+      "name": "launchdock",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://localhost:8090/v1"
       }
     }
   }
